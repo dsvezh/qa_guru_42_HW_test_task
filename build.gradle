@@ -1,0 +1,42 @@
+plugins {
+    id 'java'
+}
+
+group = 'ru.galamart'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+def junitVersion = '5.14.2'
+
+dependencies {
+    testImplementation 'com.codeborne:selenide:7.16.2'
+    testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.14.2"
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'file.encoding', 'UTF-8'
+  //  systemProperty 'selenide.headless', System.getProperty('selenide.headless', 'true')
+    systemProperty 'selenide.browser', System.getProperty('selenide.browser', 'chrome')
+    systemProperty 'baseUrl', System.getProperty('baseUrl', 'https://galamart.ru')
+    systemProperty 'test.city', System.getProperty('test.city', 'Екатеринбург')
+    testLogging {
+        events 'passed', 'skipped', 'failed'
+        exceptionFormat 'short'
+    }
+}
+
