@@ -25,7 +25,8 @@ class MainPageTest extends TestBase {
         mainPage.openMainPage();
         String currentCity = mainPage.getCity();
         String anotherCity = currentCity.equals("Москва") ? "Екатеринбург" : "Москва";
-        mainPage.chooseCityFromInitialDialog(anotherCity)
+        mainPage.openCitySelectionFromInitialDialog()
+                .selectCity(anotherCity)
                 .shouldShowCity(anotherCity);
         refresh();
         mainPage.shouldShowCity(anotherCity);
