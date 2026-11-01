@@ -50,7 +50,7 @@ public class DishwarePage {
     }
 
     public ProductPage openProduct(SelectedProduct product) {
-        productTitles.findBy(attribute("href", product.href()))
+        productTitles.findBy(attribute("href", product.productUrl()))
                 .shouldBe(visible).click();
         return new ProductPage();
     }

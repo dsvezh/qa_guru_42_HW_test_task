@@ -13,7 +13,7 @@ class MainPageTest extends TestBase {
     @Test
     @DisplayName("Главная страница: видны поиск и основные разделы")
     void homePageContainsSearchAndMainSections() {
-        mainPage.openConfiguredPage()
+        mainPage.openMainPage()
                 .shouldShowSearch()
                 .shouldShowCatalogButton()
                 .shouldShowMainSections();
