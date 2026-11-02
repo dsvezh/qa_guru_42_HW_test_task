@@ -14,12 +14,13 @@ class SearchPageTest extends TestBase {
     private final SearchComponent search = new SearchComponent();
 
     @Test
-    @DisplayName("Поиск существующего товара по названию находит выбранный товар")
+    @DisplayName("Поиск существующего товара по артикулу находит выбранный товар")
     void existingProductIsFound() {
         SelectedProduct expected = mainPage.openMainPage()
                 .clickDishwareCategory()
                 .firstProduct();
-        search.search(expected.productName())
+        search.search(expected.articleNumber())
+                .shouldShowResults()
                 .shouldContainProduct(expected);
     }
 

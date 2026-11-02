@@ -8,11 +8,18 @@ import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
+import static com.codeborne.selenide.Selenide.webdriver;
+import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
 public class SearchPage {
     private final ProductListComponent productList = new ProductListComponent();
     private final SelenideElement notFoundText = $(".notfound__text");
     private final SelenideElement notFoundRequest = $(".notfound__request");
+
+    public SearchPage shouldShowResults() {
+        webdriver().shouldHave(urlContaining("/search/?query="));
+        return this;
+    }
 
     public SearchPage shouldContainProduct(SelectedProduct expected) {
         productList.shouldContainProduct(expected);

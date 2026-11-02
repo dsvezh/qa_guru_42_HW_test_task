@@ -3,6 +3,7 @@ package components;
 import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import models.SelectedProduct;
+import org.openqa.selenium.By;
 import pages.ProductPage;
 
 import java.math.BigDecimal;
@@ -20,7 +21,7 @@ public class ProductListComponent {
     private final ElementsCollection cards = $$(".cards-list .card");
     private final ElementsCollection productTitles = $$(".cards-list a.card__title");
     private final SelenideElement firstProductTitle = cards.first().$("a.card__title");
-    private final ElementsCollection productPrices = $$(".cards-list .card [itemprop='price']");
+    private final String productPriceSelector = "[itemprop='price']";
 
     public void shouldHaveProducts() {
         cards.shouldHave(sizeGreaterThan(0), Duration.ofSeconds(10));
@@ -48,12 +49,30 @@ public class ProductListComponent {
     }
 
     public void shouldHavePricesBetween(BigDecimal min, BigDecimal max) {
-        cards.shouldHave(sizeGreaterThan(0));
-        productPrices.shouldHave(size(cards.size()))
-                .shouldHave(allMatch("цена от " + min + " до " + max, element -> {
-                    BigDecimal price = new BigDecimal(element.getText()
-                            .replaceAll("[^0-9,.]", "").replace(',', '.'));
-                    return price.compareTo(min) >= 0 && price.compareTo(max) <= 0;
-                }));
+        cards.shouldHave(sizeGreaterThan(0), Duration.ofSeconds(10));
+
+        cards.shouldHave(allMatch(
+                "каждая карточка содержит цену от " + min + " до " + max,
+                card -> {
+                    var prices = card.findElements(
+                            By.cssSelector(productPriceSelector));
+
+                    if (prices.size() != 1) {
+                        return false;
+                    }
+
+                    String priceText = prices.get(0).getText()
+                            .replaceAll("[^0-9,.]", "")
+                            .replace(',', '.');
+
+                    if (priceText.isEmpty()) {
+                        return false;
+                    }
+
+                    BigDecimal price = new BigDecimal(priceText);
+                    return price.compareTo(min) >= 0
+                            && price.compareTo(max) <= 0;
+                }
+        ), Duration.ofSeconds(10));
     }
 }
