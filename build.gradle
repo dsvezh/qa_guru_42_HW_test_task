@@ -28,11 +28,6 @@ dependencies {
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.14.2"
 }
 
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
-}
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
