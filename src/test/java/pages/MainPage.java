@@ -21,7 +21,6 @@ public class MainPage {
     private final SelenideElement citySearchInput = $("#search-input");
     private final SelenideElement catalogButton = $(".header__catalog-button");
     private final ElementsCollection buttons = $$("button");
-    private final SelenideElement changeInitialCityButton = $(".btn.btn_primary.btn_outline");
     private final SelenideElement saveCityButton = buttons.findBy(exactText("Сохранить"));
     private final ElementsCollection cityOptions = $$(".cities-list label");
     private final ElementsCollection sectionHeadings = $$("h2");
@@ -38,7 +37,7 @@ public class MainPage {
     }
 
     public MainPage openCitySelectionFromInitialDialog() {
-        changeInitialCityButton.shouldBe(visible).click();
+        city.shouldBe(visible).click();
         return this;
     }
 
