@@ -27,7 +27,7 @@ class MainPageTest extends TestBase {
         step("Открыть главную страницу", () -> mainPage.openMainPage());
         String currentCity = step("Определить текущий город в шапке", () -> mainPage.getCity());
         String anotherCity = currentCity.equals("Москва") ? "Екатеринбург" : "Москва";
-        step("Открыть выбор города через начальный диалог",
+        step("Открыть выбор города",
                 () -> mainPage.openCitySelectionFromInitialDialog());
         step("Выбрать и сохранить город «" + anotherCity + "»", () -> mainPage.selectCity(anotherCity));
         step("Проверить город «" + anotherCity + "» в шапке", () -> mainPage.shouldShowCity(anotherCity));
