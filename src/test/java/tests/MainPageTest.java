@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import pages.MainPage;
 
 import static com.codeborne.selenide.Selenide.refresh;
+import static io.qameta.allure.Allure.step;
 
 @DisplayName("Главная страница Галамарта")
 class MainPageTest extends TestBase {
@@ -13,22 +14,25 @@ class MainPageTest extends TestBase {
     @Test
     @DisplayName("Главная страница: видны поиск и основные разделы")
     void homePageContainsSearchAndMainSections() {
-        mainPage.openMainPage()
-                .shouldShowSearch()
-                .shouldShowCatalogButton()
-                .shouldShowMainSections();
+        step("Открыть главную страницу", () -> mainPage.openMainPage());
+        step("Проверить доступность поиска", () -> mainPage.shouldShowSearch());
+        step("Проверить кнопку «Каталог»", () -> mainPage.shouldShowCatalogButton());
+        step("Проверить разделы «Акции», «Новинки», «ТОП-100 товаров» и ссылку «Посуда»",
+                () -> mainPage.shouldShowMainSections());
     }
 
     @Test
     @DisplayName("Выбранный город отображается в шапке и сохраняется после обновления")
     void selectedCityIsDisplayedInHeader() {
-        mainPage.openMainPage();
-        String currentCity = mainPage.getCity();
+        step("Открыть главную страницу", () -> mainPage.openMainPage());
+        String currentCity = step("Определить текущий город в шапке", () -> mainPage.getCity());
         String anotherCity = currentCity.equals("Москва") ? "Екатеринбург" : "Москва";
-        mainPage.openCitySelectionFromInitialDialog()
-                .selectCity(anotherCity)
-                .shouldShowCity(anotherCity);
-        refresh();
-        mainPage.shouldShowCity(anotherCity);
+        step("Открыть выбор города через начальный диалог",
+                () -> mainPage.openCitySelectionFromInitialDialog());
+        step("Выбрать и сохранить город «" + anotherCity + "»", () -> mainPage.selectCity(anotherCity));
+        step("Проверить город «" + anotherCity + "» в шапке", () -> mainPage.shouldShowCity(anotherCity));
+        step("Обновить страницу", () -> refresh());
+        step("Проверить, что после обновления сохранён город «" + anotherCity + "»",
+                () -> mainPage.shouldShowCity(anotherCity));
     }
 }

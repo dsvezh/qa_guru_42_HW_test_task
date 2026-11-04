@@ -1,6 +1,8 @@
 # UI-автотесты Галамарта
 
-UI-автотесты сайта https://galamart.ru на Java 17. Стек: Gradle Wrapper 9.3.0, Selenide 7.16.2, JUnit 5.14.2. Взаимодействия со страницами вынесены в Page Object и компоненты.
+UI-автотесты сайта [Галамарт](https://galamart.ru). Взаимодействия со страницами вынесены в Page Object и переиспользуемые компоненты.
+
+Стек: Java 17, Gradle Wrapper 9.3.0, Selenide 7.16.2, JUnit 5.14.2, Allure Java 2.35.5. Для отчётов используются Gradle-плагин Allure 4.3.0 и Allure CLI 2.42.1.
 
 Тесты сгруппированы по страницам: `MainPageTest` — главная и выбор города, `SearchPageTest` — поиск, `DishwarePageTest` — категория и фильтр цены, `ProductPageTest` — карточка товара. Общие настройки и закрытие браузера находятся в `TestBase`.
 
@@ -14,7 +16,7 @@ UI-автотесты сайта https://galamart.ru на Java 17. Стек: Gra
 | Поиск несуществующего товара | Видно сообщение «По такому запросу ничего не найдено» и отправленный запрос, карточек нет |
 | Категория «Посуда» | Адрес категории, заголовок «Посуда», непустой список товаров |
 | Фильтр цены | Применены обе границы 100–500 ₽: проверяются URL, поля и метки фильтра; текущие цены всех загруженных карточек входят в диапазон |
-| Карточка товара | Название и артикул совпадают с названием и артикулом в ссылке выбранного товара |
+| Карточка товара | Адрес и название соответствуют выбранному товару, артикул совпадает с извлечённым из его ссылки |
 
 Всего 7 тестов. Сценарии корзины не реализованы.
 
@@ -22,7 +24,7 @@ UI-автотесты сайта https://galamart.ru на Java 17. Стек: Gra
 
 Товар для поиска и карточки выбирается из текущего каталога; конкретный артикул не закреплён в коде. Для пустой выдачи используется запрос с UUID. Цена проверяется только у загруженных карточек; пагинация и загрузка следующих товаров не проверяются.
 
-Размер окна — `1920x1080`, стратегия загрузки страницы — `eager`. Проверки используют ожидания Selenide; для наличия товаров в категории и проверки цен задано ожидание до 10 секунд. Отдельного ожидания инициализации JavaScript-интерфейса нет.
+Размер окна — `1920x1080`, стратегия загрузки страницы — `eager`. В `TestBase` заданы `Configuration.timeout = 30_000` для ожиданий элементов и `Configuration.pageLoadTimeout = 60_000` для загрузки страницы. Отдельный `Configuration.collectionsTimeout` не задан: проверки коллекций используют стандартное значение Selenide. Отдельного ожидания инициализации JavaScript-интерфейса нет.
 
 ## Запуск в PowerShell
 
@@ -32,7 +34,7 @@ UI-автотесты сайта https://galamart.ru на Java 17. Стек: Gra
 .\gradlew.bat clean test
 ```
 
-По умолчанию используется Chrome с видимым окном. Передача `selenide.headless` в тестовую JVM закомментирована в `build.gradle`, поэтому команда с `-Dselenide.headless=true` сейчас не включает запуск без окна.
+По умолчанию используется Chrome с видимым окном. Параметр `selenide.headless` не передаётся из Gradle в тестовую JVM, поэтому добавление `-Dselenide.headless=true` к команде сейчас не включает запуск без окна.
 
 Запуск одного сценария:
 
@@ -58,6 +60,10 @@ UI-автотесты сайта https://galamart.ru на Java 17. Стек: Gra
 |---|---|---|
 | `baseUrl` | `https://galamart.ru` | Адрес сайта |
 | `selenide.browser` | `chrome` | Браузер |
+| `browserVersion` | Не задана | Версия браузера; при удалённом запуске должна быть доступна в Selenoid |
+| `browserSize` | `1920x1080` | Размер окна браузера |
+| `remoteUrl` | Не задан | Адрес WebDriver в Selenoid; без параметра запуск локальный |
+| `videoUrl` | `https://selenoid.qa.guru/video/` | Базовый адрес видеозаписей Selenoid |
 
 ```powershell
 .\gradlew.bat test "-DbaseUrl=https://galamart.ru" "-Dselenide.browser=chrome"
@@ -65,32 +71,72 @@ UI-автотесты сайта https://galamart.ru на Java 17. Стек: Gra
 
 `test.city` передаётся из Gradle в тестовую JVM (по умолчанию `Екатеринбург`), но в текущем коде не читается и на выбор города не влияет.
 
+## Запуск через Selenoid
+
+Нужен работающий сервер Selenoid с настроенной записью видео и доступным браузером.
+Для сервера QA Guru передайте свой адрес подключения (при необходимости — с авторизацией):
+
+```powershell
+.\gradlew.bat clean test "-DremoteUrl=https://selenoid.qa.guru/wd/hub"
+```
+
+Для другого сервера укажите адрес WebDriver и адрес каталога видео, например:
+
+```powershell
+.\gradlew.bat test "-DremoteUrl=http://localhost:4444/wd/hub" "-DvideoUrl=http://localhost:4444/video/"
+```
+
+При удалённом запуске передаются `enableVNC=true` и `enableVideo=true`.
+После каждого теста в Allure добавляется HTML-плеер со ссылкой
+`<videoUrl>/<sessionId>.mp4`. Сам MP4 хранится на сервере Selenoid и не копируется
+в отчёт. Запись становится доступна после закрытия браузерной сессии и обработки на сервере.
+Локальный запуск выполняется без записи видео.
+
 ## Структура
 
 ```text
-src/test/java/
-    tests/
-        TestBase.java
-        MainPageTest.java
-        SearchPageTest.java
-        DishwarePageTest.java
-        ProductPageTest.java
-    pages/
-        MainPage.java
-        SearchPage.java
-        DishwarePage.java
-        ProductPage.java
-    components/
-        SearchComponent.java
-        ProductListComponent.java
-    models/
-        SelectedProduct.java
+src/test/
+    java/
+        tests/          # 7 тестов в 4 классах и общая настройка TestBase
+        pages/          # Page Object главной, поиска, категории и товара
+        components/     # Поиск и список товаров
+        models/         # SelectedProduct: название, ссылка и артикул
+        helpers/        # Attach: вложения Allure
+    resources/
+        allure.properties
 ```
+
+`gradle.properties` задаёт UTF-8 для JVM Gradle; кодировка компиляции и тестовой JVM настроена в `build.gradle`.
 
 ## Отчёты
 
-HTML: `build/reports/tests/test/index.html`.
+После `test` автоматически выполняется `allureReport`, в том числе при падении тестов.
+Allure содержит результаты JUnit 5 и русские шаги. После каждого теста, если браузер
+был запущен, прикрепляются последний скриншот, исходный код страницы и логи консоли.
+При запуске через Selenoid также прикрепляется видеоплеер. Вложения собираются
+до закрытия браузера, включая успешные тесты. Если получить отдельное вложение
+не удалось, в отчёт добавляется описание ошибки; остальные вложения продолжают собираться.
+Allure Selenide дополнительно прикрепляет скриншот и HTML страницы при ошибках.
 
-JUnit XML: `build/test-results/test/`.
+| Результат | Путь |
+|---|---|
+| Данные Allure | `build/allure-results/` |
+| HTML-отчёт Allure | `build/reports/allure-report/allureReport/index.html` |
+| HTML-отчёт Gradle | `build/reports/tests/test/index.html` |
+| JUnit XML | `build/test-results/test/` |
+| Скриншоты и HTML Selenide при падении | `build/reports/tests/` |
 
-При падении Selenide сохраняет снимок экрана и HTML страницы в `build/reports/tests/`.
+Открыть отчёт через локальный сервер (остановка — `Ctrl+C`):
+
+```powershell
+.\gradlew.bat allureServe
+```
+
+Повторно сформировать отчёт по сохранённым результатам без запуска тестов:
+
+```powershell
+.\gradlew.bat allureReport
+```
+
+Allure CLI скачивается Gradle автоматически; устанавливать его отдельно не требуется.
+Используйте `clean test` для отчёта только по текущему запуску.

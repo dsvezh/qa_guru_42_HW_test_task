@@ -7,7 +7,6 @@ import org.openqa.selenium.By;
 import pages.ProductPage;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 
 import static com.codeborne.selenide.CollectionCondition.allMatch;
 import static com.codeborne.selenide.CollectionCondition.size;
@@ -24,7 +23,7 @@ public class ProductListComponent {
     private final String productPriceSelector = "[itemprop='price']";
 
     public void shouldHaveProducts() {
-        cards.shouldHave(sizeGreaterThan(0), Duration.ofSeconds(10));
+        cards.shouldHave(sizeGreaterThan(0));
     }
 
     public SelectedProduct firstProduct() {
@@ -49,7 +48,7 @@ public class ProductListComponent {
     }
 
     public void shouldHavePricesBetween(BigDecimal min, BigDecimal max) {
-        cards.shouldHave(sizeGreaterThan(0), Duration.ofSeconds(10));
+        cards.shouldHave(sizeGreaterThan(0));
 
         cards.shouldHave(allMatch(
                 "каждая карточка содержит цену от " + min + " до " + max,
@@ -73,6 +72,6 @@ public class ProductListComponent {
                     return price.compareTo(min) >= 0
                             && price.compareTo(max) <= 0;
                 }
-        ), Duration.ofSeconds(10));
+        ));
     }
 }
