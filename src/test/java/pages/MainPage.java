@@ -21,7 +21,6 @@ public class MainPage {
     private final SelenideElement citySearchInput = $("#search-input");
     private final SelenideElement catalogButton = $(".header__catalog-button");
     private final ElementsCollection buttons = $$("button");
-    private final SelenideElement saveCityButton = buttons.findBy(exactText("Сохранить"));
     private final ElementsCollection cityOptions = $$(".cities-list label");
     private final ElementsCollection sectionHeadings = $$("h2");
     private final ElementsCollection categories = $$(".categories-row-slider__item");
@@ -44,7 +43,7 @@ public class MainPage {
     public MainPage selectCity(String nameCity) {
         citySearchInput.shouldBe(visible).setValue(nameCity);
         cityOptions.findBy(exactText(nameCity)).shouldBe(visible).click();
-        saveCityButton.shouldBe(visible).click();
+        buttons.findBy(exactText("Сохранить")).shouldBe(visible).click();
         citySearchInput.should(disappear);
         return this;
     }

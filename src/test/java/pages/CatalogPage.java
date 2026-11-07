@@ -1,5 +1,6 @@
 package pages;
 
+import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import components.ProductListComponent;
 import models.SelectedProduct;
@@ -9,7 +10,6 @@ import java.util.regex.Pattern;
 
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.matchText;
-import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.value;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
@@ -22,8 +22,7 @@ public class CatalogPage {
     private final SelenideElement categoryHeading = $("h1.catalogue__heading");
     private final SelenideElement minPriceInput = $("input[name='gte']");
     private final SelenideElement maxPriceInput = $("input[name='lte']");
-    private final SelenideElement minPriceBadge = $$(".filters__badges-item").findBy(text("Минимальная Цена"));
-    private final SelenideElement maxPriceBadge = $$(".filters__badges-item").findBy(text("Максимальная Цена"));
+    private final ElementsCollection filterBadges = $$(".filters__badges-item");
 
     public CatalogPage shouldHaveUrl(String expectedUrlPart) {
         webdriver().shouldHave(urlContaining(expectedUrlPart));
@@ -61,10 +60,10 @@ public class CatalogPage {
     public CatalogPage shouldHaveAppliedPriceFilter(BigDecimal min, BigDecimal max) {
         minPriceInput.shouldHave(value(min.toPlainString()));
         maxPriceInput.shouldHave(value(max.toPlainString()));
-        minPriceBadge.shouldBe(visible).shouldHave(matchText(
-                "^Минимальная Цена:\\s*" + Pattern.quote(min.toPlainString()) + "\\s*₽$"));
-        maxPriceBadge.shouldBe(visible).shouldHave(matchText(
-                "^Максимальная Цена:\\s*" + Pattern.quote(max.toPlainString()) + "\\s*₽$"));
+        filterBadges.findBy(matchText("^Минимальная Цена:\\s*" + Pattern.quote(min.toPlainString()) + "\\s*₽$"))
+                .shouldBe(visible);
+        filterBadges.findBy(matchText("^Максимальная Цена:\\s*" + Pattern.quote(max.toPlainString()) + "\\s*₽$"))
+                .shouldBe(visible);
         return this;
     }
 
