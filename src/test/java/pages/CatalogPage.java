@@ -17,7 +17,7 @@ import static com.codeborne.selenide.Selenide.$$;
 import static com.codeborne.selenide.Selenide.webdriver;
 import static com.codeborne.selenide.WebDriverConditions.urlContaining;
 
-public class DishwarePage {
+public class CatalogPage {
     private final ProductListComponent productList = new ProductListComponent();
     private final SelenideElement categoryHeading = $("h1.catalogue__heading");
     private final SelenideElement minPriceInput = $("input[name='gte']");
@@ -25,17 +25,17 @@ public class DishwarePage {
     private final SelenideElement minPriceBadge = $$(".filters__badges-item").findBy(text("Минимальная Цена"));
     private final SelenideElement maxPriceBadge = $$(".filters__badges-item").findBy(text("Максимальная Цена"));
 
-    public DishwarePage shouldHaveDishwareUrl() {
-        webdriver().shouldHave(urlContaining("/catalog/posuda/"));
+    public CatalogPage shouldHaveUrl(String expectedUrlPart) {
+        webdriver().shouldHave(urlContaining(expectedUrlPart));
         return this;
     }
 
-    public DishwarePage shouldHaveDishwareHeading() {
-        categoryHeading.shouldBe(visible).shouldHave(exactText("Посуда"));
+    public CatalogPage shouldHaveHeading(String expectedTitle) {
+        categoryHeading.shouldBe(visible).shouldHave(exactText(expectedTitle));
         return this;
     }
 
-    public DishwarePage shouldHaveProducts() {
+    public CatalogPage shouldHaveProducts() {
         productList.shouldHaveProducts();
         return this;
     }
@@ -48,7 +48,7 @@ public class DishwarePage {
         return productList.openProduct(product);
     }
 
-    public DishwarePage setFilterByPrice(BigDecimal min, BigDecimal max) {
+    public CatalogPage setFilterByPrice(BigDecimal min, BigDecimal max) {
         minPriceInput.shouldBe(visible)
                 .setValue(min.toPlainString())
                 .pressTab();
@@ -67,7 +67,7 @@ public class DishwarePage {
         return this;
     }
 
-    public DishwarePage shouldHavePricesBetween(BigDecimal min, BigDecimal max) {
+    public CatalogPage shouldHavePricesBetween(BigDecimal min, BigDecimal max) {
         productList.shouldHavePricesBetween(min, max);
         return this;
     }

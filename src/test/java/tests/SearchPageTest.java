@@ -4,7 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import components.SearchComponent;
 import pages.MainPage;
-import pages.DishwarePage;
+import pages.CatalogPage;
 import pages.SearchPage;
 import models.SelectedProduct;
 
@@ -21,7 +21,7 @@ class SearchPageTest extends TestBase {
     @DisplayName("Поиск существующего товара по артикулу находит выбранный товар")
     void existingProductIsFound() {
         step("Открыть главную страницу", () -> mainPage.openMainPage());
-        DishwarePage catalog = step("Перейти в категорию «Посуда»", () -> mainPage.clickDishwareCategory());
+        CatalogPage catalog = step("Перейти в категорию «Посуда»", () -> mainPage.clickCategory("Посуда"));
         SelectedProduct expected = step("Запомнить данные первого товара в каталоге", () -> catalog.firstProduct());
         SearchPage results = step("Найти товар по артикулу " + expected.articleNumber(),
                 () -> search.search(expected.articleNumber()));

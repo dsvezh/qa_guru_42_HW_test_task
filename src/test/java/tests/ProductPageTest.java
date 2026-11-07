@@ -2,7 +2,7 @@ package tests;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import pages.DishwarePage;
+import pages.CatalogPage;
 import pages.MainPage;
 import pages.ProductPage;
 import models.SelectedProduct;
@@ -17,7 +17,7 @@ class ProductPageTest extends TestBase {
     @DisplayName("Карточка товара: название и артикул совпадают с выбранным товаром")
     void productDetailsMatchSelectedProduct() {
         step("Открыть главную страницу", () -> mainPage.openMainPage());
-        DishwarePage catalog = step("Перейти в категорию «Посуда»", () -> mainPage.clickDishwareCategory());
+        CatalogPage catalog = step("Перейти в категорию «Посуда»", () -> mainPage.clickCategory("Посуда"));
         SelectedProduct expected = step("Запомнить данные первого товара в каталоге", () -> catalog.firstProduct());
         ProductPage product = step("Открыть карточку товара с артикулом " + expected.articleNumber(),
                 () -> catalog.openProduct(expected));

@@ -4,8 +4,6 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import components.SearchComponent;
 
-import java.time.Duration;
-
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.exactText;
@@ -24,7 +22,7 @@ public class MainPage {
     private final SelenideElement saveCityButton = buttons.findBy(exactText("Сохранить"));
     private final ElementsCollection cityOptions = $$(".cities-list label");
     private final ElementsCollection sectionHeadings = $$("h2");
-    private final SelenideElement dishwareCategory = $$(".categories-row-slider__item").findBy(exactText("Посуда"));
+    private final ElementsCollection categories = $$(".categories-row-slider__item");
 
 
     public String getCity() {
@@ -68,12 +66,12 @@ public class MainPage {
         for (String section : new String[]{"Акции", "Новинки", "ТОП-100 товаров"}) {
             sectionHeadings.findBy(exactText(section)).shouldBe(visible);
         }
-        dishwareCategory.shouldBe(visible);
+        categories.findBy(exactText("Посуда")).shouldBe(visible);
         return this;
     }
 
-    public DishwarePage clickDishwareCategory() {
-        dishwareCategory.shouldBe(visible).click();
-        return new DishwarePage();
+    public CatalogPage clickCategory(String categoryTitle) {
+        categories.findBy(exactText(categoryTitle)).shouldBe(visible).click();
+        return new CatalogPage();
     }
 }

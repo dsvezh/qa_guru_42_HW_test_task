@@ -54,7 +54,7 @@
 Пример для сценария фильтрации по цене:
 
 ```powershell
-.\gradlew.bat test --tests "tests.DishwarePageTest.pricesAreWithinSelectedRange"
+.\gradlew.bat test --tests "tests.CatalogPageTest.pricesAreWithinSelectedRange"
 ```
 
 ### Запуск тестового класса
@@ -108,7 +108,7 @@ src/test/
         allure.properties
 ```
 
-Тесты сгруппированы по страницам: `MainPageTest` — главная страница, `SearchPageTest` — поиск, `DishwarePageTest` — категория "Посуда" и фильтр цены, `ProductPageTest` — карточка товара. Класс `TestBase` настраивает браузер и собирает вложения перед закрытием сессии.
+Тесты сгруппированы по страницам: `MainPageTest` — главная страница, `SearchPageTest` — поиск, `CatalogPageTest` — категория "Посуда" и фильтр цены, `ProductPageTest` — карточка товара. Класс `TestBase` настраивает браузер и собирает вложения перед закрытием сессии.
 
 Компоненты `SearchComponent` и `ProductListComponent` отвечают за поиск и работу со списком товаров. Модель `SelectedProduct` хранит данные выбранного товара, а помощник `Attach` формирует вложения Allure.
 
