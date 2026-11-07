@@ -16,4 +16,8 @@ public record SelectedProduct(String productName, String productUrl, String arti
     public String path() {
         return URI.create(productUrl).getPath();
     }
+
+    public String titleWithArticleNumber() {
+        return productName + " (" + articleNumber + ")";
+    }
 }

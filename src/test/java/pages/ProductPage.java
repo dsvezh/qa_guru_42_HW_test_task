@@ -20,7 +20,7 @@ public class ProductPage {
 
     public ProductPage shouldMatchTitleAndArticleNumber(SelectedProduct expected) {
         productLabel.shouldBe(visible)
-                .shouldHave(exactText(expected.productName() + " (" + expected.articleNumber() + ")"));
+                .shouldHave(exactText(expected.titleWithArticleNumber()));
         return this;
     }
 
