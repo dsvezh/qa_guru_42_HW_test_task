@@ -142,6 +142,9 @@ src/test/
 
 ### Интеграция с Jenkins
 
+- [Задача в Jenkins](https://jenkins.qa.guru/job/svezh_galamart_ui_test/)
+- [Allure-отчёт сборки № 19](https://jenkins.qa.guru/job/svezh_galamart_ui_test/19/allure/)
+
 На странице сборки **Jenkins** доступны ссылка на **Allure Report** и артефакты отчёта. Ниже показана успешная сборка проекта:
 
 ![Успешная сборка Jenkins с Allure Report и артефактами отчёта](images/jenkins_build.png)
