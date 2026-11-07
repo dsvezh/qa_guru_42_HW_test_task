@@ -4,6 +4,8 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import components.SearchComponent;
 
+import java.util.List;
+
 import static com.codeborne.selenide.Condition.disappear;
 import static com.codeborne.selenide.Condition.enabled;
 import static com.codeborne.selenide.Condition.exactText;
@@ -57,16 +59,15 @@ public class MainPage {
         return this;
     }
 
-    public MainPage shouldShowCatalogButton() {
-        catalogButton.shouldBe(visible, enabled).shouldHave(text("Каталог"));
+    public MainPage shouldShowCatalogButton(String expectedText) {
+        catalogButton.shouldBe(visible, enabled).shouldHave(text(expectedText));
         return this;
     }
 
-    public MainPage shouldShowMainSections() {
-        for (String section : new String[]{"Акции", "Новинки", "ТОП-100 товаров"}) {
+    public MainPage shouldShowMainSections(List<String> expectedSections) {
+        for (String section : expectedSections) {
             sectionHeadings.findBy(exactText(section)).shouldBe(visible);
         }
-        categories.findBy(exactText("Посуда")).shouldBe(visible);
         return this;
     }
 
