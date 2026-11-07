@@ -48,16 +48,17 @@ public class CatalogPage {
         return productList.openProduct(product);
     }
 
-    public CatalogPage setFilterByPrice(BigDecimal min, BigDecimal max) {
-        minPriceInput.shouldBe(visible)
-                .setValue(min.toPlainString())
-                .pressTab();
-        webdriver().shouldHave(urlContaining("gte%3D" + min.toPlainString()));
-        maxPriceInput.shouldBe(visible)
-                .setValue(max.toPlainString())
-                .pressTab();
-        webdriver().shouldHave(urlContaining("gte%3D" + min.toPlainString()));
-        webdriver().shouldHave(urlContaining("lte%3D" + max.toPlainString()));
+    public CatalogPage setMinPriceFilter(BigDecimal min) {
+        minPriceInput.setValue(min.toPlainString()).pressTab();
+        return this;
+    }
+
+    public CatalogPage setMaxPriceFilter(BigDecimal max) {
+        maxPriceInput.setValue(max.toPlainString()).pressTab();
+        return this;
+    }
+
+    public CatalogPage shouldHaveAppliedPriceFilter(BigDecimal min, BigDecimal max) {
         minPriceInput.shouldHave(value(min.toPlainString()));
         maxPriceInput.shouldHave(value(max.toPlainString()));
         minPriceBadge.shouldBe(visible).shouldHave(matchText(

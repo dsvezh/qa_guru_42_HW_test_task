@@ -20,12 +20,18 @@ class SearchPageTest extends TestBase {
     @Test
     @DisplayName("Поиск существующего товара по артикулу находит выбранный товар")
     void existingProductIsFound() {
-        step("Открыть главную страницу", () -> mainPage.openMainPage());
-        CatalogPage catalog = step("Перейти в категорию «Посуда»", () -> mainPage.clickCategory("Посуда"));
-        SelectedProduct expected = step("Запомнить данные первого товара в каталоге", () -> catalog.firstProduct());
+        step("Открыть главную страницу",
+                () -> mainPage.openMainPage());
+        CatalogPage catalog = step("Перейти в категорию «Посуда»",
+                () -> mainPage.clickCategory("Посуда"));
+        SelectedProduct expected = step("Запомнить данные первого товара в каталоге",
+                () -> catalog.firstProduct());
+
         SearchPage results = step("Найти товар по артикулу " + expected.articleNumber(),
                 () -> search.search(expected.articleNumber()));
-        step("Проверить переход на страницу результатов поиска", () -> results.shouldShowResults());
+
+        step("Проверить переход на страницу результатов поиска",
+                () -> results.shouldShowResults());
         step("Проверить название и ссылку выбранного товара в результатах поиска",
                 () -> results.shouldContainProduct(expected));
     }
@@ -34,9 +40,12 @@ class SearchPageTest extends TestBase {
     @DisplayName("Поиск несуществующего товара: пустая выдача и сообщение")
     void nonexistentProductShowsEmptyResults() {
         String query = "test-no-product-" + UUID.randomUUID().toString().replace("-", "");
-        step("Открыть главную страницу", () -> mainPage.openMainPage());
+
+        step("Открыть главную страницу",
+                () -> mainPage.openMainPage());
         SearchPage results = step("Выполнить поиск по несуществующему запросу «" + query + "»",
                 () -> search.search(query));
+
         step("Проверить сообщение об отсутствии товаров, поисковый запрос и пустую выдачу",
                 () -> results.shouldShowNoResults(query));
     }

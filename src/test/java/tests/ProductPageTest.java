@@ -17,11 +17,16 @@ class ProductPageTest extends TestBase {
     @DisplayName("Карточка товара: название и артикул совпадают с выбранным товаром")
     void productDetailsMatchSelectedProduct() {
         step("Открыть главную страницу", () -> mainPage.openMainPage());
-        CatalogPage catalog = step("Перейти в категорию «Посуда»", () -> mainPage.clickCategory("Посуда"));
-        SelectedProduct expected = step("Запомнить данные первого товара в каталоге", () -> catalog.firstProduct());
+        CatalogPage catalog = step("Перейти в категорию «Посуда»",
+                () -> mainPage.clickCategory("Посуда"));
+        SelectedProduct expected = step("Запомнить данные первого товара в каталоге",
+                () -> catalog.firstProduct());
+
         ProductPage product = step("Открыть карточку товара с артикулом " + expected.articleNumber(),
                 () -> catalog.openProduct(expected));
-        step("Проверить адрес карточки выбранного товара", () -> product.shouldMatchProductUrl(expected));
+
+        step("Проверить адрес карточки выбранного товара",
+                () -> product.shouldMatchProductUrl(expected));
         step("Проверить название и артикул товара в карточке",
                 () -> product.shouldMatchTitleAndArticleNumber(expected));
     }

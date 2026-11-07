@@ -14,9 +14,13 @@ class MainPageTest extends TestBase {
     @Test
     @DisplayName("Главная страница: видны поиск и основные разделы")
     void homePageContainsSearchAndMainSections() {
-        step("Открыть главную страницу", () -> mainPage.openMainPage());
-        step("Проверить доступность поиска", () -> mainPage.shouldShowSearch());
-        step("Проверить кнопку «Каталог»", () -> mainPage.shouldShowCatalogButton());
+        step("Открыть главную страницу",
+                () -> mainPage.openMainPage());
+
+        step("Проверить доступность поиска",
+                () -> mainPage.shouldShowSearch());
+        step("Проверить кнопку «Каталог»",
+                () -> mainPage.shouldShowCatalogButton());
         step("Проверить разделы «Акции», «Новинки», «ТОП-100 товаров» и ссылку «Посуда»",
                 () -> mainPage.shouldShowMainSections());
     }
@@ -24,13 +28,20 @@ class MainPageTest extends TestBase {
     @Test
     @DisplayName("Выбранный город отображается в шапке и сохраняется после обновления")
     void selectedCityIsDisplayedInHeader() {
-        step("Открыть главную страницу", () -> mainPage.openMainPage());
-        String currentCity = step("Определить текущий город в шапке", () -> mainPage.getCity());
+        step("Открыть главную страницу",
+                () -> mainPage.openMainPage());
+        String currentCity = step("Определить текущий город в шапке",
+                () -> mainPage.getCity());
         String anotherCity = currentCity.equals("Москва") ? "Екатеринбург" : "Москва";
+
         step("Открыть выбор города",
                 () -> mainPage.openCitySelectionFromInitialDialog());
-        step("Выбрать и сохранить город «" + anotherCity + "»", () -> mainPage.selectCity(anotherCity));
-        step("Проверить город «" + anotherCity + "» в шапке", () -> mainPage.shouldShowCity(anotherCity));
+        step("Выбрать и сохранить город «" + anotherCity + "»",
+                () -> mainPage.selectCity(anotherCity));
+
+        step("Проверить город «" + anotherCity + "» в шапке",
+                () -> mainPage.shouldShowCity(anotherCity));
+
         step("Обновить страницу", () -> refresh());
         step("Проверить, что после обновления сохранён город «" + anotherCity + "»",
                 () -> mainPage.shouldShowCity(anotherCity));
