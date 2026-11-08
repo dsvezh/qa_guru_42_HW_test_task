@@ -30,9 +30,9 @@ public class SearchPage {
     }
 
     @Step("Проверить, что поиск по запросу «{query}» показывает сообщение об отсутствии товаров и пустую выдачу")
-    public SearchPage shouldShowNoResults(String query) {
+    public SearchPage shouldShowNoResults(String query, String expectedMessage) {
         notFoundText.shouldBe(visible)
-                .shouldHave(exactText("По такому запросу ничего не найдено"));
+                .shouldHave(exactText(expectedMessage));
         notFoundRequest.shouldHave(text(query));
         productList.shouldBeEmpty();
         return this;

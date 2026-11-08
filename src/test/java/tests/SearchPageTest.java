@@ -34,6 +34,6 @@ class SearchPageTest extends TestBase {
         mainPage.openMainPage();
         SearchPage results = mainPage.search(query);
 
-        results.shouldShowNoResults(query);
+        results.shouldShowNoResults(query, "По такому запросу ничего не найдено");
     }
 }
