@@ -45,8 +45,10 @@
 
 ### Локальный запуск всех тестов
 
+По умолчанию Owner загружает `src/test/resources/local.properties` для запуска Chrome через `ChromeDriver`.
+
 ```powershell
-.\gradlew.bat clean test
+.\gradlew.bat clean test "-Drun.type=local"
 ```
 
 ### Запуск отдельного теста
@@ -71,26 +73,32 @@
 
 | Параметр | По умолчанию | Назначение |
 |---|---|---|
-| `baseUrl` | `https://galamart.ru` | Адрес сайта |
-| `selenide.browser` | `chrome` | Браузер |
-| `browserVersion` | Не задана | Версия браузера; при удалённом запуске должна быть доступна в Selenoid |
+| `run.type` | `local` | Режим запуска: `local` для ChromeDriver, `remote` для Selenoid |
+| `base.url` | `https://galamart.ru` | Адрес сайта |
+| `browser.name` | `CHROME` | Браузер: `CHROME` или `FIREFOX` |
+| `browser.version` | `157` локально, `148.0` удалённо | Для локального Chrome указывается номер основной версии |
 | `browserSize` | `1920x1080` | Размер окна браузера |
-| `remoteUrl` | Не задан | Адрес WebDriver в Selenoid; без параметра запуск локальный |
-| `videoUrl` | `https://selenoid.qa.guru/video/` | Базовый адрес видеозаписей Selenoid |
+| `remote.url` | Переменная окружения `SELENOID_REMOTE_URL` в режиме `remote` | Адрес удалённого WebDriver |
+| `video.url` | `https://selenoid.qa.guru/video/` в режиме `remote` | Базовый адрес видеозаписей Selenoid |
 
 ```powershell
-.\gradlew.bat test "-DbaseUrl=https://galamart.ru" "-Dselenide.browser=chrome"
+.\gradlew.bat test "-Dbase.url=https://galamart.ru" "-Dbrowser.name=CHROME"
 ```
 
 ### Удалённый запуск через Selenoid
 
-Нужен доступ к работающему серверу **Selenoid** с доступным браузером и настроенной записью видео. Параметр `remoteUrl` переключает тесты на удалённый запуск.
-
-Пример для сервера QA Guru; если сервер требует авторизации, укажите свои данные подключения:
+`-Drun.type=remote` загружает `src/test/resources/remote.properties`. Задайте `SELENOID_REMOTE_URL` в текущем сеансе PowerShell, затем запускайте тесты.
 
 ```powershell
-.\gradlew.bat clean test "-DremoteUrl=https://selenoid.qa.guru/wd/hub"
+$credential = Get-Credential -Message 'Введите логин и пароль Selenoid'
+$login = [uri]::EscapeDataString($credential.UserName)
+$password = [uri]::EscapeDataString($credential.GetNetworkCredential().Password)
+$env:SELENOID_REMOTE_URL = "https://${login}:${password}@selenoid.qa.guru/wd/hub"
+
+.\gradlew.bat clean test "-Drun.type=remote"
 ```
+
+Параметры `-Dremote.url` и `-Dvideo.url` переопределяют значения из файла. Для существующих команд Jenkins поддерживаются `-DremoteUrl` и `-DvideoUrl`. Если на сервере настроена другая версия браузера, задайте её через `-Dbrowser.version`. Явный `-Drun.type` имеет приоритет.
 
 ## 🗂 Структура проекта
 
@@ -100,11 +108,14 @@
 src/test/
     java/
         tests/          # 7 тестов в 4 классах и общая настройка TestBase
+        config/         # WebDriverConfig, Browser и WebDriverProvider
         pages/          # Page Object главной, поиска, категории и товара
             components/ # Поиск и список товаров
         models/         # SelectedProduct: название, ссылка и артикул
         helpers/        # Attach: вложения Allure
     resources/
+        local.properties
+        remote.properties
         allure.properties
 ```
 

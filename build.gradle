@@ -23,6 +23,7 @@ allure {
 
 dependencies {
     testImplementation 'com.codeborne:selenide:7.16.2'
+    testImplementation 'org.aeonbits.owner:owner:1.0.12'
     testImplementation "io.qameta.allure:allure-selenide:$allureVersion"
     testImplementation "org.junit.jupiter:junit-jupiter:$junitVersion"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher:1.14.2"
@@ -41,13 +42,18 @@ test {
     useJUnitPlatform()
     finalizedBy tasks.named('allureReport')
     systemProperty 'file.encoding', 'UTF-8'
-    systemProperty 'selenide.browser', System.getProperty('selenide.browser', 'chrome')
-    systemProperty 'baseUrl', System.getProperty('baseUrl', 'https://galamart.ru')
     systemProperty 'test.city', System.getProperty('test.city', 'Екатеринбург')
-    ['remoteUrl', 'videoUrl', 'browserVersion', 'browserSize'].each { propertyName ->
-        if (System.getProperty(propertyName) != null) {
-            systemProperty propertyName, System.getProperty(propertyName)
+    def defaultRunType = System.getProperty('remoteUrl', '').isBlank() ? 'local' : 'remote'
+    systemProperty 'run.type', System.getProperty('run.type', defaultRunType)
+    ['base.url': 'baseUrl', 'browser.name': 'selenide.browser', 'browser.version': 'browserVersion',
+     'remote.url': 'remoteUrl', 'video.url': 'videoUrl'].each { name, alias ->
+        def value = System.getProperty(name, System.getProperty(alias))
+        if (value != null) {
+            systemProperty name, name == 'browser.name' ? value.toUpperCase(Locale.ROOT) : value
         }
+    }
+    if (System.getProperty('browserSize') != null) {
+        systemProperty 'browserSize', System.getProperty('browserSize')
     }
     testLogging {
         events 'passed', 'skipped', 'failed'

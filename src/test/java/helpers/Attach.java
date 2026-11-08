@@ -1,6 +1,7 @@
 package helpers;
 
 import com.codeborne.selenide.Selenide;
+import config.WebDriverConfig;
 import io.qameta.allure.Attachment;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -45,7 +46,7 @@ public class Attach {
     }
 
     public static String getVideoUrl() {
-        String videoBaseUrl = System.getProperty("videoUrl", "https://selenoid.qa.guru/video/");
+        String videoBaseUrl = WebDriverConfig.load().getVideoUrl();
         return videoBaseUrl + (videoBaseUrl.endsWith("/") ? "" : "/") + sessionId() + ".mp4";
     }
 }

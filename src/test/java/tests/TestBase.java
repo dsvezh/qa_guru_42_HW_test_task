@@ -2,6 +2,8 @@ package tests;
 
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.logevents.SelenideLogger;
+import config.WebDriverConfig;
+import config.WebDriverProvider;
 import helpers.Attach;
 import io.qameta.allure.selenide.AllureSelenide;
 import org.junit.jupiter.api.AfterEach;
@@ -16,25 +18,32 @@ import static com.codeborne.selenide.WebDriverRunner.hasWebDriverStarted;
 public class TestBase {
     @BeforeAll
     static void configureBrowser() {
+        WebDriverConfig driverConfig = WebDriverConfig.load();
+        boolean remote = "remote".equals(driverConfig.getRunType());
+        String remoteUrl = remote ? driverConfig.getRemoteUrl() : null;
+        if (remote && (remoteUrl == null || remoteUrl.isBlank())) {
+            throw new IllegalArgumentException("Set SELENOID_REMOTE_URL or -Dremote.url for run.type=remote");
+        }
+
         SelenideLogger.addListener("allure", new AllureSelenide()
                 .screenshots(true)
                 .savePageSource(true));
-        Configuration.baseUrl = System.getProperty("baseUrl", "https://galamart.ru");
+        Configuration.baseUrl = driverConfig.getBaseUrl();
         Configuration.browserSize = System.getProperty("browserSize", "1920x1080");
-        Configuration.browserVersion = System.getProperty("browserVersion", "");
+        Configuration.browser = WebDriverProvider.class.getName();
+        Configuration.browserVersion = driverConfig.getBrowserVersion();
         Configuration.pageLoadStrategy = "eager";
         Configuration.timeout = 30_000;
         Configuration.pageLoadTimeout = 60_000;
-        String remoteUrl = System.getProperty("remoteUrl", "");
-        Configuration.remote = remoteUrl.isBlank() ? null : remoteUrl;
-        if (Configuration.remote != null) {
-            DesiredCapabilities capabilities = new DesiredCapabilities();
+        Configuration.remote = remoteUrl;
+        DesiredCapabilities capabilities = new DesiredCapabilities();
+        if (remote) {
             capabilities.setCapability("selenoid:options", Map.of(
                     "enableVNC", true,
                     "enableVideo", true
             ));
-            Configuration.browserCapabilities = capabilities;
         }
+        Configuration.browserCapabilities = capabilities;
     }
 
     @AfterEach
