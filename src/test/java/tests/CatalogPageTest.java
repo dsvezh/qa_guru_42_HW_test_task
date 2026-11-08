@@ -7,7 +7,7 @@ import pages.MainPage;
 
 import java.math.BigDecimal;
 
-@DisplayName("Страница «Посуда»")
+@DisplayName("Каталог товаров Галамарта")
 class CatalogPageTest extends TestBase {
     private final MainPage mainPage = new MainPage();
 
